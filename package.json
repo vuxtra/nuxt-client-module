@@ -1,6 +1,6 @@
 {
   "name": "@vuxtra/nuxt-client-module",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Vuxtra client module for nuxtjs ",
   "main": "lib/index.js",
   "module": "dist/acorn.es.js",
