@@ -1,5 +1,5 @@
 /*!
- * Vuxtra.js v0.1.2
+ * Vuxtra.js v0.1.3
  * (c) 2017-2017 Faruk Brbovic
  * Released under the MIT License.
  */
@@ -384,7 +384,7 @@ class VuxtraController {
             });
         };
 
-        this.services = require('~/.nuxt/clientVuxtra.js').services($_internalService, this);
+        this.services = require('.nuxt/clientVuxtra.js').services($_internalService, this);
     }
 
     doBindOrExecute(func) {
