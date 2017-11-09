@@ -389,7 +389,7 @@ class VuxtraController {
             });
         };
 
-        this.services = require(path.resolve(options.buildDir, '/clientVuxtra.js')).services($_internalService, this);
+        this.services = require(path.resolve(options.buildDir, './clientVuxtra.js')).services($_internalService, this);
     }
 
     doBindOrExecute(func) {
