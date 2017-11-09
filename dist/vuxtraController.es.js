@@ -4,7 +4,6 @@
  * Released under the MIT License.
  */
 import socketclusterClient from 'socketcluster-client';
-import path from 'path';
 import _ from 'lodash';
 
 class Request {
@@ -385,7 +384,7 @@ class VuxtraController {
             });
         };
 
-        this.services = require(path.resolve(options.buildDir, './clientVuxtra.js')).services($_internalService, this);
+        this.services = require('~/.vuxtra/clientVuxtra.js').services($_internalService, this);
     }
 
     doBindOrExecute(func) {

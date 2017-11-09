@@ -8,7 +8,6 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var socketclusterClient = _interopDefault(require('socketcluster-client'));
-var path = _interopDefault(require('path'));
 var _ = _interopDefault(require('lodash'));
 
 class Request {
@@ -389,7 +388,7 @@ class VuxtraController {
             });
         };
 
-        this.services = require(path.resolve(options.buildDir, './clientVuxtra.js')).services($_internalService, this);
+        this.services = require('~/.vuxtra/clientVuxtra.js').services($_internalService, this);
     }
 
     doBindOrExecute(func) {
