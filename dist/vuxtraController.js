@@ -8,206 +8,8 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var socketclusterClient = _interopDefault(require('socketcluster-client'));
+var sharedCore = require('@vuxtra/shared-core');
 var _ = _interopDefault(require('lodash'));
-
-class Request {
-    constructor (rawRequest = null) {
-        this._messageType = 'req';
-        if (rawRequest === null) {
-            rawRequest = {};
-        }
-        this.meta   = (typeof rawRequest.meta !== 'undefined' && rawRequest.meta !== null ? rawRequest.meta : {});
-        this.data   = (typeof rawRequest.data !== 'undefined' ? rawRequest.data : null);
-        this.id     = (typeof rawRequest.id !== 'undefined' ? rawRequest.id : null);
-        this.type   = (typeof rawRequest.type !== 'undefined' ? rawRequest.type : 'generic');
-    }
-    // setters
-    setData(data) {
-        this.data = data;
-        return this
-    }
-    setMeta(key, val) {
-        this.meta[key] = val;
-        return this
-    }
-    setId(id) {
-        this.id = id;
-        return this
-    }
-    setType(type) {
-        this.type = type;
-        return this
-    }
-    // getters
-    getData() {
-        return this.data
-    }
-    getMeta(key, defaultVal = null) {
-        if (typeof this.meta[key] !== 'undefined') {
-            return this.meta[key]
-        }
-        return defaultVal
-    }
-    getId(id) {
-        return this.id
-    }
-    getType(type) {
-        return this.type
-    }
-}
-
-class ServiceRequest extends Request {
-    constructor (rawRequest = null) {
-        super(rawRequest);
-        // if blank than we set the service
-        if (rawRequest === null) {
-            this.setType('service');
-        }
-    }
-
-    setServiceName(serviceName) {
-        this.setMeta('serName', serviceName);
-        return this
-    }
-
-    setServiceAction(serviceAction) {
-        this.setMeta('serAction', serviceAction);
-        return this
-    }
-
-    getServiceName() {
-        return this.getMeta('serName')
-    }
-
-    getServiceAction() {
-        return this.getMeta('serAction')
-    }
-}
-
-class Response {
-    constructor (rawResponse = {}) {
-        this._messageType = 'res';
-        this.meta = (typeof rawResponse.meta !== 'undefined' && rawResponse.meta !== null ? rawResponse.meta : {});
-        this.data = (typeof rawResponse.data !== 'undefined' ? rawResponse.data : null);
-        this.id = (typeof rawResponse.id !== 'undefined' ? rawResponse.id : null);
-        this.type = (typeof rawResponse.type !== 'undefined' ? rawResponse.type : 'generic');
-        this.statusCode = (typeof rawResponse.statusCode !== 'undefined' ? rawResponse.statusCode : 200);
-        this.statusMessage = (typeof rawResponse.statusMessage !== 'undefined' ? rawResponse.statusMessage : 'success');
-    }
-
-    // setters
-    setData(data) {
-        this.data = data;
-        return this
-    }
-    setMeta(key, val) {
-        this.meta[key] = val;
-        return this
-    }
-    setId(id) {
-        this.id = id;
-        return this
-    }
-    setType(type) {
-        this.type = type;
-        return this
-    }
-    ss(code, message = null) {
-        this.statusCode = code;
-        this.statusMessage = message;
-        return this
-    }
-    ssSuccess(msg = 'success') {
-        this.statusCode = 200;
-        this.statusMessage = msg;
-        return this
-    }
-    ssClientError(msg = 'Client Error') {
-        this.statusCode = 400;
-        this.statusMessage = msg;
-        return this
-    }
-    ssClientErrorNotFound(msg = 'Client Error: Not Found') {
-        this.statusCode = 404;
-        this.statusMessage = msg;
-        return this
-    }
-    ssClientErrorInvalidRequest(msg = 'Client Error: Not Found') {
-        this.statusCode = 404;
-        this.statusMessage = msg;
-        return this
-    }
-    ssServerError(msg = 'Server Error') {
-        this.statusCode = 500;
-        this.statusMessage = msg;
-        return this
-    }
-
-    // getters
-    getData() {
-        return this.data
-    }
-    getMeta(key, defaultVal = null) {
-        if (typeof this.meta[key] !== undefined) {
-            return this.meta[key]
-        }
-        return defaultVal
-    }
-    getId(id) {
-        return this.id
-    }
-    getType(type) {
-        return this.type
-    }
-    getStatusCode() {
-        return this.statusCode
-    }
-    getStatusMessage() {
-        return this.statusMessage
-    }
-
-    // checkers
-    isStatusSuccess() {
-        if (this.statusCode >= 200 && this.statusCode <300) {
-            return true;
-        }
-        return false
-    }
-    isStatusError() {
-        if (this.statusCode >= 400 && this.statusCode <600) {
-            return true;
-        }
-        return false
-    }
-}
-
-class ServiceResponse extends Response {
-    constructor (rawRequest = {}) {
-        super(rawRequest);
-        this.setType('service');
-    }
-
-    setServiceName(serviceName) {
-        this.setMeta('serName', serviceName);
-        return this
-    }
-
-    setServiceAction(serviceAction) {
-        this.setMeta('serAction', serviceAction);
-        return this
-    }
-
-    getServiceName() {
-        return this.getMeta('serName')
-    }
-
-
-    getServiceAction() {
-        return this.getMeta('serAction')
-    }
-
-
-}
 
 var asyncGenerator = function () {
   function AwaitValue(value) {
@@ -373,14 +175,14 @@ class VuxtraController {
         var $_internalService = (callArguments, options, action) => {
             return new Promise((resolve, reject) => {
                 this.doBindOrExecute(() => {
-                    let request = new ServiceRequest();
+                    let request = new sharedCore.ServiceRequest();
                     request.setServiceName(options).setServiceAction(action).setData(callArguments).setId(this.socket.id + this._internalRequestCounter);
                     this._internalRequestCounter++;
                     this.socket.emit('service.call', request, function (err, res) {
                         if (err) {
                             reject(err);
                         } else {
-                            let response = new ServiceResponse(res);
+                            let response = new sharedCore.ServiceResponse(res);
                             resolve(response);
                         }
                     });
@@ -416,14 +218,14 @@ class VuxtraController {
             if (!_.isFunction(requestFunc)) {
                 throw Error('requestFunc [ first param ] must of function tyupe');
             }
-            let request = new ServiceRequest();
+            let request = new sharedCore.ServiceRequest();
             requestFunc(request);
             return new Promise(function (resolve, reject) {
                 _this.socket.emit('service.call', request, function (err, res) {
                     if (err) {
                         reject(err);
                     } else {
-                        let response = new ServiceResponse(res);
+                        let response = new sharedCore.ServiceResponse(res);
                         resolve(response);
                     }
                 });
