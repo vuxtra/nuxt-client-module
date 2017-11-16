@@ -1,5 +1,5 @@
 /*!
- * Vuxtra.js v0.1.5
+ * Vuxtra.js v0.1.6
  * (c) 2017-2017 Faruk Brbovic
  * Released under the MIT License.
  */
@@ -26,7 +26,8 @@ class VuxtraController {
 
         let $_doBindOrExecute = func => {
             if (this._internalSocketConnected !== true) {
-                this.socket.on('connect', function () {
+                this.socket.on('connect', () => {
+                    this._internalSocketConnected = true;
                     func();
                 });
             } else {
