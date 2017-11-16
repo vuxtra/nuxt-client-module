@@ -1,5 +1,5 @@
 /*!
- * Vuxtra.js v0.1.4
+ * Vuxtra.js v0.1.5
  * (c) 2017-2017 Faruk Brbovic
  * Released under the MIT License.
  */
@@ -37,7 +37,7 @@ class VuxtraController {
         let $_getVarFromData = response => {
             let res = response.getData();
 
-            res.prototype.getResponse = function () {
+            res.getResponse = function () {
                 return response;
             };
 
