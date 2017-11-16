@@ -9,8 +9,8 @@
     "build:all": "rollup -c build/rollup.config.js"
   },
   "engines": {
-    "node": ">= 8.7.0",
-    "npm": ">= 5.3.0"
+    "node": ">= 8.4.0",
+    "yarn": ">= 1.1.4"
   },
   "repository": {
     "type": "git",
