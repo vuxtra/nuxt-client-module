@@ -37,6 +37,20 @@ class VuxtraController {
         let $_getVarFromData = response => {
             let res = response.getData();
 
+            switch (typeof res) {
+                case 'string':
+                    res = new String(res);
+                    break;
+                case 'number':
+                    res = new Number(res);
+                    break;
+                case 'boolean':
+                    res = new Boolean(res);
+                    break;
+                case 'undefined':
+                    res = new Object();
+            }
+
             res.getResponse = function () {
                 return response;
             };
