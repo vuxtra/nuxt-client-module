@@ -1,5 +1,5 @@
 /*!
- * Vuxtra.js v0.1.6
+ * Vuxtra.js v0.1.7
  * (c) 2017-2017 Faruk Brbovic
  * Released under the MIT License.
  */
@@ -39,30 +39,6 @@ class VuxtraController {
             }
         };
 
-        let $_getVarFromData = response => {
-            let res = response.getData();
-
-            switch (typeof res) {
-                case 'string':
-                    res = new String(res);
-                    break;
-                case 'number':
-                    res = new Number(res);
-                    break;
-                case 'boolean':
-                    res = new Boolean(res);
-                    break;
-                case 'undefined':
-                    res = new Object();
-            }
-
-            res.getResponse = function () {
-                return response;
-            };
-
-            return res;
-        };
-
         let $_internalService = (callArguments, options, action) => {
             return new Promise((resolve, reject) => {
                 $_doBindOrExecute(() => {
@@ -74,7 +50,7 @@ class VuxtraController {
                             reject(err);
                         } else {
                             let response = new sharedCore.ServiceResponse(res);
-                            resolve($_getVarFromData(response));
+                            resolve(response);
                         }
                     });
                 });
